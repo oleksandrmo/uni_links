@@ -17,11 +17,11 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
 public class UniLinksPlugin
-        implements FlutterPlugin,
-                MethodChannel.MethodCallHandler,
-                EventChannel.StreamHandler,
-                ActivityAware,
-                PluginRegistry.NewIntentListener {
+    implements FlutterPlugin,
+    MethodChannel.MethodCallHandler,
+    EventChannel.StreamHandler,
+    ActivityAware,
+    PluginRegistry.NewIntentListener {
 
     private static final String MESSAGES_CHANNEL = "uni_links/messages";
     private static final String EVENTS_CHANNEL = "uni_links/events";
@@ -37,13 +37,16 @@ public class UniLinksPlugin
         String action = intent.getAction();
         String dataString = intent.getDataString();
 
-        if (Intent.ACTION_VIEW.equals(action) || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
+        if (Intent.ACTION_VIEW.equals(action) || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)
+            || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)) {
             if (initialIntent) {
                 initialLink = dataString;
                 initialIntent = false;
             }
             latestLink = dataString;
-            if (changeReceiver != null) changeReceiver.onReceive(context, intent);
+            if (changeReceiver != null) {
+                changeReceiver.onReceive(context, intent);
+            }
         }
     }
 
@@ -81,7 +84,9 @@ public class UniLinksPlugin
         eventChannel.setStreamHandler(plugin);
     }
 
-    /** Plugin registration. */
+    /**
+     * Plugin registration.
+     */
     public static void registerWith(@NonNull PluginRegistry.Registrar registrar) {
         // Detect if we've been launched in background
         if (registrar.activity() == null) {
@@ -97,7 +102,8 @@ public class UniLinksPlugin
     }
 
     @Override
-    public void onDetachedFromEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {}
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+    }
 
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
@@ -133,15 +139,17 @@ public class UniLinksPlugin
     }
 
     @Override
-    public void onDetachedFromActivityForConfigChanges() {}
+    public void onDetachedFromActivityForConfigChanges() {
+    }
 
     @Override
     public void onReattachedToActivityForConfigChanges(
-            @NonNull ActivityPluginBinding activityPluginBinding) {
+        @NonNull ActivityPluginBinding activityPluginBinding) {
         activityPluginBinding.addOnNewIntentListener(this);
         this.handleIntent(this.context, activityPluginBinding.getActivity().getIntent());
     }
 
     @Override
-    public void onDetachedFromActivity() {}
+    public void onDetachedFromActivity() {
+    }
 }
