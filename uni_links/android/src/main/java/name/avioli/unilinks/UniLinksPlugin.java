@@ -37,8 +37,7 @@ public class UniLinksPlugin
         String action = intent.getAction();
         String dataString = intent.getDataString();
 
-        if (Intent.ACTION_VIEW.equals(action) || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)
-            || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)) {
+        if (Intent.ACTION_VIEW.equals(action) || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
             if (initialIntent) {
                 initialLink = dataString;
                 initialIntent = false;
